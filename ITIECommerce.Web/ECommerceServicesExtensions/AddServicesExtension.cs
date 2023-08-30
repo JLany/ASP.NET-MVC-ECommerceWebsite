@@ -15,7 +15,7 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
 
             builder.Services.AddECommerceDbContext(connectionString);
 
-            // Configure Identity and Authentication.
+            // Configure Identity, Authentication and Cookie.
             builder.Services.AddITIECommerceIdentity<ITIECommerceUser>(
                 options => options.SignIn.RequireConfirmedEmail = false)
                 .AddRoles<IdentityRole>()

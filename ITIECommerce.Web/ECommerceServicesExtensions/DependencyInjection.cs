@@ -1,4 +1,6 @@
-﻿namespace ITIECommerce.Web.ECommerceServicesExtensions
+﻿using ITIECommerce.Web.Authorization;
+
+namespace ITIECommerce.Web.ECommerceServicesExtensions
 {
     public static class DependencyInjection
     {
@@ -6,7 +8,7 @@
             this IServiceCollection services)
         {
             return services
-                ;
+                .AddScoped<IProductAuthorizationService, ProductAuthorizationService>();
         }
     }
 }
