@@ -8,7 +8,4 @@ public class ITIECommerceUser : IdentityUser
     [MinLength(5)]
     [MaxLength(200)]
     public string Address { get; set; } = null!;
-
-    public string RoleId { get; set; } = null!;
-    public IdentityRole Role { get; set; } = null!;
 }

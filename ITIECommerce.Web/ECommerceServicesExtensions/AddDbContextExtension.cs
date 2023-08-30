@@ -11,7 +11,6 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
             services.AddDbContext<ITIECommerceDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-
             return services;
         }
     }
