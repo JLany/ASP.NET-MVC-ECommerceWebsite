@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace ITIECommerce.Data;
 
+/// <summary>
+/// This class is responsible for exposing a DbContext factory for the migration command.
+/// </summary>
 internal class ITIECommerceContextFactory : IDesignTimeDbContextFactory<ITIECommerceDbContext>
 {
     public ITIECommerceDbContext CreateDbContext(string[] args)

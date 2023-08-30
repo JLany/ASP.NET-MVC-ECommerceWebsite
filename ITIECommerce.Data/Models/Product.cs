@@ -12,7 +12,7 @@ public class Product
     public int Id { get; set; }
 
     public string SellerId { get; set; } = null!;
-    public ITIECommerceUser Seller { get; set; } = null!;
+    public virtual ITIECommerceUser Seller { get; set; } = null!;
 
     [MinLength(2)]
     [MaxLength(100)]

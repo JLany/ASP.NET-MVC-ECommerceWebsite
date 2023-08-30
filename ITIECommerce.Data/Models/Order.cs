@@ -12,7 +12,7 @@ public class Order
     public int Id { get; set; }
 
     public string CustomerId { get; set; } = null!;
-    public ITIECommerceUser Customer { get; set; } = null!;
+    public virtual ITIECommerceUser Customer { get; set; } = null!;
 
     [MinLength(5)]
     [MaxLength(200)]

@@ -12,7 +12,9 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
         
     }
 
-    public DbSet<Product> Products { get; set; }
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<OrderEntry> OrderEntries { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
