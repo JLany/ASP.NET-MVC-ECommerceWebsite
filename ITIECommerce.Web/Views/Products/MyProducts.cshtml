@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ProductViewModel>
+
+@{
+    ViewData["Title"] = "Instructors";
+    Layout = "_ECommerceLayout";
+}
+
+
+
+<div class="justify-content-center" style="padding: 120px;">
+<h1 class="h1">Your Products</h1>
+<a class="btn btn-primary " asp-action="Create">Create New</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Available Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@p.Id" class="link-info" style="text-decoration: none;">
+                        @p.Name
+                    </a>
+                </td>
+                <td>@p.Price.ToString(".00")</td>
+                <td>@p.Quantity</td>
+
+                <td>
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@p.Id">
+                        Edit
+                    </a>
+                </td>
+
+                <td>
+                    <a class="btn btn-danger" onclick="confirmDelete(event)"
+                        asp-action="Delete" asp-route-id="@p.Id">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+@section Scripts {
+    <script>
+        function confirmDelete(e) {
+            const isConfirmed = confirm("Are you sure you want to delete this product?");
+
+            if (!isConfirmed) {
+                e.preventDefault();
+            }
+        }
+    </script>
+}

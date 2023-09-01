@@ -25,4 +25,22 @@ public class Product
     [Range(0, int.MaxValue)]
     public int Quantity { get; set; }
     public string? ImageUri { get; set; }
+
+    public virtual ICollection<OrderEntry>? OrderEntries { get; set; }
+
+    public Product()
+    {
+        
+    }
+
+    public Product(dynamic viewModel)
+    {
+        Id = viewModel.Id;
+        SellerId = viewModel.SellerId;
+        Name = viewModel.Name;
+        Description = viewModel.Description;
+        Price = viewModel.Price;
+        Quantity = viewModel.Quantity;
+        ImageUri = viewModel.ImageUri;
+    }
 }

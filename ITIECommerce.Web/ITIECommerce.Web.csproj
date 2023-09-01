@@ -24,4 +24,8 @@
     <ProjectReference Include="..\ITIECommerce.Data\ITIECommerce.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\images\" />
+  </ItemGroup>
+
 </Project>

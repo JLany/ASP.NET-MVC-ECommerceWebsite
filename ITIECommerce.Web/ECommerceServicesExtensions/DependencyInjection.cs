@@ -1,4 +1,7 @@
-﻿using ITIECommerce.Web.Authorization;
+﻿using ITIECommerce.Web.Authorization.ProductAuthorizationHandlers;
+using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
+using ITIECommerce.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ITIECommerce.Web.ECommerceServicesExtensions
 {
@@ -7,8 +10,18 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
         public static IServiceCollection RegisterServicesWithDependencyInjection(
             this IServiceCollection services)
         {
-            return services
-                .AddScoped<IProductAuthorizationService, ProductAuthorizationService>();
+            // Product Authorization Services.
+            services
+                .AddScoped<IProductAuthorizationService, ProductAuthorizationService>()
+                .AddScoped<IAuthorizationHandler, ProductIsSellerAuthorizationHandler>()
+                .AddScoped<IAuthorizationHandler, ProductCreateAuthorizationHandler>();
+
+            services
+                .AddTransient<IImageWriter, ImageWriter>();
+
+            
+
+            return services;
         }
     }
 }

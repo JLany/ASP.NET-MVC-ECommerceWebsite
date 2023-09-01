@@ -5,7 +5,7 @@ namespace ITIECommerce.Web.Models;
 
 public class ProductViewModel
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public string SellerId { get; set; } 
     public string? SellerName { get; set; }

@@ -20,4 +20,6 @@ public class Order
 
     [Range(0, double.MaxValue)]
     public decimal Total { get; set; }
+
+    public virtual ICollection<OrderEntry>? OrderEntries { get; set; }
 }

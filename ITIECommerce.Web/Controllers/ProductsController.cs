@@ -5,19 +5,31 @@ using ITIECommerce.Data;
 using ITIECommerce.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using ITIECommerce.Web.Models;
+using Microsoft.AspNetCore.Identity;
+using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
+using ITIECommerce.Web.Utility;
 
 namespace ITIECommerce.Web.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ITIECommerceDbContext _context;
+        private readonly UserManager<ITIECommerceUser> _userManager;
+        private readonly IProductAuthorizationService _authorizationService;
+        private readonly IImageWriter _imageWriter;
         private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(
             ITIECommerceDbContext context,
+            UserManager<ITIECommerceUser> userManager,
+            IProductAuthorizationService authorizationService,
+            IImageWriter imageWriter,
             ILogger<ProductsController> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _authorizationService = authorizationService;
+            _imageWriter = imageWriter;
             _logger = logger;
         }
 
@@ -26,10 +38,28 @@ namespace ITIECommerce.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var products = _context.Products.Include(p => p.Seller);
-            return View(await products.Select(p => new ProductViewModel(p)).ToListAsync());
+            return View(
+                await products
+                .Select(p => new ProductViewModel(p))
+                .ToListAsync());
+        }
+            
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> MyProducts()
+        {
+            var userId = _userManager.GetUserId(User);
+            var products = _context.Products
+                .Include(p => p.Seller)
+                .Where(p => p.SellerId == userId);
+
+            return 
+                View(await products
+                .Select(p => new ProductViewModel(p))
+                .ToListAsync());
         }
 
         // GET: Products/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Products == null)
@@ -39,19 +69,22 @@ namespace ITIECommerce.Web.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Seller)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            ViewBag.AuthorizationService = _authorizationService;
+
+            return View(new ProductViewModel(product));
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Seller")]
         public IActionResult Create()
         {
-            ViewData["SellerId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -60,73 +93,36 @@ namespace ITIECommerce.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SellerId,Name,Description,Price,Quantity,ImageUri")] Product product)
+        public async Task<IActionResult> Create(
+            [Bind("Name,Description,Price,Quantity,Image")] ProductViewModel product)
         {
-            if (ModelState.IsValid)
+            bool isAuthorized = await _authorizationService
+                .AuthorizeCreateAsync(User, product);
+
+            if (!isAuthorized)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Forbid();
             }
-            ViewData["SellerId"] = new SelectList(_context.Users, "Id", "Id", product.SellerId);
-            return View(product);
+
+            if (!ModelState.IsValid)
+            {
+                return View(product);
+            }
+
+            var userId = _userManager.GetUserId(User);
+
+            product.SellerId = userId;
+            product.ImageUri = await _imageWriter.WriteImageToRootAsync(product.Image);
+
+            _context.Add(new Product(product));
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyProducts));
         }
 
         // GET: Products/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            ViewData["SellerId"] = new SelectList(_context.Users, "Id", "Id", product.SellerId);
-            return View(product);
-        }
-
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SellerId,Name,Description,Price,Quantity,ImageUri")] Product product)
-        {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["SellerId"] = new SelectList(_context.Users, "Id", "Id", product.SellerId);
-            return View(product);
-        }
-
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
             {
@@ -135,37 +131,117 @@ namespace ITIECommerce.Web.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Seller)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            bool isAuthorized = await _authorizationService
+                .AuthorizeUpdateAsync(User, product);
+
+            if (!isAuthorized)
+            {
+                return Forbid();
+            }
+
+            return View(new ProductViewModel(product));
         }
 
-        // POST: Products/Delete/5
+        // POST: Products/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("Id,SellerId,Name,Description,Price,Quantity,ImageUri")] ProductViewModel product)
+        {
+            bool isAuthorized = await _authorizationService
+                .AuthorizeUpdateAsync(User, product);
+
+            if (!isAuthorized)
+            {
+                return Forbid();
+            }
+
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(product);
+            }
+
+            var updateCandidate = await _context.Products
+                .Include(p => p.Seller)
+                .FirstOrDefaultAsync(p => p.Id ==  product.Id);
+
+            if (updateCandidate == null)
+            {
+                return NotFound();
+            }
+
+            await UpdateProductAsync(updateCandidate, product);
+
+            _context.Update(updateCandidate);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyProducts));
+        }
+
+        private async Task UpdateProductAsync(Product product, ProductViewModel viewModel)
+        {
+            product.Name = viewModel.Name;
+            product.Description = viewModel.Description;
+            product.Price = viewModel.Price;
+            product.Quantity = viewModel.Quantity;
+
+            string? imageUri = await _imageWriter.WriteImageToRootAsync(viewModel.Image);
+
+            if (imageUri is not null)
+            {
+                product.ImageUri = imageUri;
+            }
+        }
+
+        // DELETE: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Products == null)
             {
                 return Problem("Entity set 'ITIECommerceDbContext.Products'  is null.");
             }
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+
+            if (id == 0 || id == null)
             {
-                _context.Products.Remove(product);
+                return NotFound();
+            }
+
+            bool isAuthorized = await _authorizationService
+                .AuthorizeDeleteAsync(User, new ProductViewModel { Id = id });
+
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound(); 
             }
             
+            _context.Products.Remove(product);
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyProducts));
         }
 
-        private bool ProductExists(int id)
+        private bool ProductExists(int? id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Products?
+                .Any(e => e.Id == (id ?? 0)))
+                .GetValueOrDefault();
         }
     }
 }
