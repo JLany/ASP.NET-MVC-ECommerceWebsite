@@ -2,7 +2,7 @@
 
 namespace ITIECommerce.Web.ECommerceServicesExtensions
 {
-    public static class AddITIECommerceIdentityExtension
+    public static class AddIdentityExtension
     {
         public static IdentityBuilder AddITIECommerceIdentity<TUser>(this IServiceCollection services
             , Action<IdentityOptions> configureOptions) where TUser : IdentityUser

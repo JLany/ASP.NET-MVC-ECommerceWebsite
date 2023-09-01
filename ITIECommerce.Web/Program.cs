@@ -9,7 +9,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.AddServices();
+        builder.SetupInfrastructureServices();
+
+        builder.Services.RegisterServicesWithDependencyInjection();
 
         // Configure services options
         builder.ConfigureServicesOptions();

@@ -5,7 +5,7 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
 {
     public static class AddDbContextExtension
     {
-        public static IServiceCollection AddECommerceDbContext(this IServiceCollection services
+        public static IServiceCollection AddITIECommerceDbContext(this IServiceCollection services
             , string connectionString)
         {
             services.AddDbContext<ITIECommerceDbContext>(options =>

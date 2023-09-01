@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ITIECommerce.Web.ECommerceServicesExtensions
 {
-    public static class AddServicesExtension
+    public static class SetupInfrastructureServicesExtension
     {
-        public static void AddServices(this WebApplicationBuilder builder)
+        public static void SetupInfrastructureServices(this WebApplicationBuilder builder)
         {
             // Add DbContext.
             var connectionString = builder.Configuration.GetConnectionString("ITIECommerceDB")
                 ?? throw new InvalidOperationException("Connection string for 'ITIECommerceDB' not found.");
 
-            builder.Services.AddECommerceDbContext(connectionString);
+            builder.Services.AddITIECommerceDbContext(connectionString);
 
             // Configure Identity, Authentication and Cookie.
             builder.Services.AddITIECommerceIdentity<ITIECommerceUser>(
@@ -29,8 +29,6 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
                     .RequireAuthenticatedUser()
                     .Build();
             });
-
-            builder.Services.RegisterServicesWithDependencyInjection();
 
             // Add MVC.
             builder.Services.AddControllersWithViews();
