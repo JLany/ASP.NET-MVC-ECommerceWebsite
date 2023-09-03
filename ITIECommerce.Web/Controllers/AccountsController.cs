@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ITIECommerce.Web.Controllers;
 
 // TODO: Add the Manage Action.
-// TODO: Add AccessDenied Action.
 
 [Route("/Accounts/{action=Login}")]
 public class AccountsController : Controller
@@ -85,7 +84,7 @@ public class AccountsController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = CreateUser();
+            var user = CreateUser(registerViewModel);
 
             await _userStore.SetUserNameAsync(user, registerViewModel.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, registerViewModel.Email, CancellationToken.None);
@@ -104,6 +103,12 @@ public class AccountsController : Controller
                 else
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    if (Request.Cookies["CartId"] is not null)
+                    {
+                        return RedirectToAction("Index", "Cart");
+                    }
+
                     return RedirectToAction("Index", "Products", userId);
                 }
             }
@@ -118,11 +123,16 @@ public class AccountsController : Controller
         return View(registerViewModel);
     }
 
-    private ITIECommerceUser CreateUser()
+    private ITIECommerceUser CreateUser(RegisterViewModel registerViewModel)
     {
         try
         {
-            return Activator.CreateInstance<ITIECommerceUser>();
+            var user = Activator.CreateInstance<ITIECommerceUser>();
+            user.Address = registerViewModel.Address;
+            user.FirstName = registerViewModel.FirstName;
+            user.LastName = registerViewModel.LastName;
+
+            return user;
         }
         catch
         {

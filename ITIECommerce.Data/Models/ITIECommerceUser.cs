@@ -12,6 +12,8 @@ public class ITIECommerceUser : IdentityUser
     public string? FirstName { get; set; }
     public string? LastName { get; set;}
 
+    public virtual Cart Cart { get; set; }
+
     public virtual ICollection<Product>? Products { get; set; }
     public virtual ICollection<Order>? Orders { get; set; }
 

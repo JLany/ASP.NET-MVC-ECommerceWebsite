@@ -10,33 +10,51 @@
 <div class="justify-content-center" style="padding: 120px;">
     <h1 class="h1">Your Orders</h1>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Address</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var o in Model)
-            {
+    @if (Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@o.Id</td>
-
-                    <td>
-                        <a asp-action="Details" asp-route-id="@o.Id" class="link-info" style="text-decoration: none;">
-                            @o.CreateDate
-                        </a>
-                    </td>
-
-                    <td>@o.Address</td>
-
-                    <td>$@o.Total.ToString(".00")</td>
-
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Address</th>
+                    <th>Total</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.Id</td>
+
+                        <td>
+                            <a asp-action="Details" asp-route-id="@o.Id" class="link-info" style="text-decoration: none;">
+                                @o.CreateDate
+                            </a>
+                        </td>
+
+                        <td>@o.Address</td>
+
+                        <td>$@o.Total.ToString(".00")</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="card border shadow-none">
+                        <div class="card-body">
+                            <h3>You did not make any orders yet.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

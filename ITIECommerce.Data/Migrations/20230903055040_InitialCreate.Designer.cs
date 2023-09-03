@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITIECommerce.Data.Migrations
 {
     [DbContext(typeof(ITIECommerceDbContext))]
-    [Migration("20230903025140_SmallTweaks2")]
-    partial class SmallTweaks2
+    [Migration("20230903055040_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,10 +24,92 @@ namespace ITIECommerce.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("ITIECommerce.Data.Models.AnonymousCart", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(128)")
+                        .HasDefaultValueSql("newid()");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AnonymousCarts");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.Cart", b =>
+                {
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.CartEntry<ITIECommerce.Data.Models.AnonymousCart>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CartId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("money");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AnonymousCartEntries");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.CartEntry<ITIECommerce.Data.Models.Cart>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CartId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("money");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartEntries");
+                });
+
             modelBuilder.Entity("ITIECommerce.Data.Models.ITIECommerceUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -114,11 +196,13 @@ namespace ITIECommerce.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<decimal>("ShippingCost")
                         .HasColumnType("money");
@@ -196,7 +280,7 @@ namespace ITIECommerce.Data.Migrations
 
                     b.Property<string>("SellerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -273,7 +357,7 @@ namespace ITIECommerce.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
@@ -295,7 +379,7 @@ namespace ITIECommerce.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -307,7 +391,7 @@ namespace ITIECommerce.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -322,7 +406,7 @@ namespace ITIECommerce.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -336,6 +420,55 @@ namespace ITIECommerce.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.Cart", b =>
+                {
+                    b.HasOne("ITIECommerce.Data.Models.ITIECommerceUser", "Customer")
+                        .WithOne("Cart")
+                        .HasForeignKey("ITIECommerce.Data.Models.Cart", "CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.CartEntry<ITIECommerce.Data.Models.AnonymousCart>", b =>
+                {
+                    b.HasOne("ITIECommerce.Data.Models.AnonymousCart", "Cart")
+                        .WithMany("CartEntries")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ITIECommerce.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.CartEntry<ITIECommerce.Data.Models.Cart>", b =>
+                {
+                    b.HasOne("ITIECommerce.Data.Models.Cart", "Cart")
+                        .WithMany("CartEntries")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ITIECommerce.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ITIECommerce.Data.Models.Order", b =>
@@ -430,8 +563,21 @@ namespace ITIECommerce.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ITIECommerce.Data.Models.AnonymousCart", b =>
+                {
+                    b.Navigation("CartEntries");
+                });
+
+            modelBuilder.Entity("ITIECommerce.Data.Models.Cart", b =>
+                {
+                    b.Navigation("CartEntries");
+                });
+
             modelBuilder.Entity("ITIECommerce.Data.Models.ITIECommerceUser", b =>
                 {
+                    b.Navigation("Cart")
+                        .IsRequired();
+
                     b.Navigation("Orders");
 
                     b.Navigation("Products");

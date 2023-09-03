@@ -20,7 +20,7 @@
             <th>Available Quantity</th>
         </tr>
     </thead>
-    @if (Model.Count() < 1)
+    @if (!Model.Any())
     {
         <text>You do not have any products yet.</text>
     }

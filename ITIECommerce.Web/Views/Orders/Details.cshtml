@@ -59,7 +59,7 @@
                                                 <div class="flex-lg-grow-1 ms-3">
 
                                                     <h6 class="small mb-0">
-                                                        <a asp-action="Details" asp-controller="Products" class="text-reset">
+                                                        <a asp-action="Details" asp-controller="Products" asp-route-id="@entry.ProductId" class="text-reset">
                                                             @entry.Product.Name
                                                         </a>
                                                     </h6>
