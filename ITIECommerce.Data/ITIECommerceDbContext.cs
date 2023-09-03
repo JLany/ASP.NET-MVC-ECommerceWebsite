@@ -28,6 +28,14 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
             .Property("Total")
             .HasColumnType("money");
 
+        builder.Entity<Order>()
+            .Property("ShippingCost")
+            .HasColumnType("money");
+
+        builder.Entity<Order>()
+            .Property("SubTotal")
+            .HasColumnType("money");
+
         builder.Entity<OrderEntry>()
             .Property("SubTotal")
             .HasColumnType("money");

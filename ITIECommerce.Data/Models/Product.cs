@@ -15,7 +15,7 @@ public class Product
     public virtual ITIECommerceUser Seller { get; set; } = null!;
 
     [MinLength(2)]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
 

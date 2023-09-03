@@ -22,13 +22,19 @@
                     <span>$@Model.Price.ToString(".00")</span>
                 </div>
 
+                <div class="fs-5 mb-5">
+                    <span>Available: (@Model.Quantity)</span>
+                </div>
+
                 <p class="lead">@Model.Description</p>
                                 
                 <!-- Shopping Cart -->
                 @if (User.IsInRole(Constants.ProductCustomerRoleName))
                 {
                     <div class="d-flex">
-                        <input class="form-control text-center me-3" id="inputQuantity" type="number" value="1" style="max-width: 3rem" />
+                        <input class="form-control text-center me-3" id="inputQuantity"
+                            type="number" value="1" style="max-width: 4rem" max="@Model.Quantity" />
+
                         <button class="btn btn-outline-dark flex-shrink-0" type="button">
                             <i class="bi-cart-fill me-1"></i>
                             Add to cart
@@ -37,9 +43,7 @@
                 }
 
                 @if (await AuthorizationService
-                    .AuthorizeUpdateAsync(User, Model) 
-                    // TODO: (Debugging) Fix this condition
-                    || true)
+                    .AuthorizeUpdateAsync(User, Model))
                 {
                     <div>
                         <br />

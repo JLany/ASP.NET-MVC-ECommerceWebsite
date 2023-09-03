@@ -4,6 +4,7 @@ using ITIECommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITIECommerce.Data.Migrations
 {
     [DbContext(typeof(ITIECommerceDbContext))]
-    partial class ITIECommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230903024947_SmallTweaks")]
+    partial class SmallTweaks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,13 +121,13 @@ namespace ITIECommerce.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("ShippingCost")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<decimal>("SubTotal")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("money");

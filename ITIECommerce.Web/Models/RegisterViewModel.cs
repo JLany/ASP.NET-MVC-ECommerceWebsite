@@ -9,7 +9,6 @@ public class RegisterViewModel
     public string UserName { get; set; }
 
     [DataType(DataType.Password)]
-    [Remote(action: "IsStrongPassword", controller: "Accounts")]
     public string Password { get; set; }
 
     [DataType(DataType.Password)]

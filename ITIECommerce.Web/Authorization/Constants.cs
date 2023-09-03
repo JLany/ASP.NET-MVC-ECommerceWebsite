@@ -1,4 +1,6 @@
-﻿namespace ITIECommerce.Web.Authorization.ProductAuthorizationServices;
+﻿using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
+
+namespace ITIECommerce.Web.Authorization;
 
 public static class Constants
 {

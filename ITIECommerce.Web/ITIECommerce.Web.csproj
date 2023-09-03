@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Authorization\OrderAuthorizationHandlers\" />
     <Folder Include="wwwroot\upload\images\" />
   </ItemGroup>
 

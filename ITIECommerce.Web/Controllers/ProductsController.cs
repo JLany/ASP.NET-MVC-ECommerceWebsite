@@ -49,7 +49,6 @@ namespace ITIECommerce.Web.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var products = _context.Products
-                .Include(p => p.Seller)
                 .Where(p => p.SellerId == userId);
 
             return 
@@ -75,8 +74,6 @@ namespace ITIECommerce.Web.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.AuthorizationService = _authorizationService;
 
             return View(new ProductViewModel(product));
         }
@@ -192,6 +189,12 @@ namespace ITIECommerce.Web.Controllers
             return RedirectToAction(nameof(MyProducts));
         }
 
+        /// <summary>
+        /// Updates the <see cref="Product"/>'s properties with the properties of <see cref="ProductViewModel"/>.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         private async Task UpdateProductAsync(Product product, ProductViewModel viewModel)
         {
             product.Name = viewModel.Name;
@@ -222,14 +225,15 @@ namespace ITIECommerce.Web.Controllers
                 return NotFound();
             }
 
-            bool isAuthorized = await _authorizationService
-                .AuthorizeDeleteAsync(User, new ProductViewModel { Id = id });
-
             var product = await _context.Products.FindAsync(id);
+            
             if (product == null)
             {
                 return NotFound(); 
             }
+
+            bool isAuthorized = await _authorizationService
+                .AuthorizeDeleteAsync(User, product);
             
             _context.Products.Remove(product);
 

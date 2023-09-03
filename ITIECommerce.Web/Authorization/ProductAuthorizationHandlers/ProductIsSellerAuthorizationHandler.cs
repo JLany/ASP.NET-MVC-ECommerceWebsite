@@ -1,5 +1,4 @@
 ﻿using ITIECommerce.Data.Models;
-using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;

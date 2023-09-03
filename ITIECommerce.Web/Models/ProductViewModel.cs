@@ -11,7 +11,7 @@ public class ProductViewModel
     public string? SellerName { get; set; }
 
     [MinLength(2)]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
 
@@ -37,6 +37,6 @@ public class ProductViewModel
         Quantity = product.Quantity;
         ImageUri = product.ImageUri;
         SellerId = product.SellerId;
-        SellerName = product.Seller.FullName;
+        SellerName = product.Seller?.FullName;
     }
 }

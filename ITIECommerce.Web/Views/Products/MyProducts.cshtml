@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProductViewModel>
 
 @{
-    ViewData["Title"] = "Instructors";
+    ViewData["Title"] = "My Products";
     Layout = "_ECommerceLayout";
 }
 
@@ -20,7 +20,12 @@
             <th>Available Quantity</th>
         </tr>
     </thead>
+    @if (Model.Count() < 1)
+    {
+        <text>You do not have any products yet.</text>
+    }
     <tbody>
+
         @foreach (var p in Model)
         {
             <tr>

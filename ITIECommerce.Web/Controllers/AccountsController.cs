@@ -1,4 +1,5 @@
 ﻿using ITIECommerce.Data.Models;
+using ITIECommerce.Web.Authorization;
 using ITIECommerce.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ITIECommerce.Web.Controllers;
 
 // TODO: Add the Manage Action.
+// TODO: Add AccessDenied Action.
 
 [Route("/Accounts/{action=Login}")]
 public class AccountsController : Controller
@@ -87,7 +89,7 @@ public class AccountsController : Controller
 
             await _userStore.SetUserNameAsync(user, registerViewModel.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, registerViewModel.Email, CancellationToken.None);
-            await _roleStore.AddToRoleAsync(user, "Customer", CancellationToken.None);
+            await _roleStore.AddToRoleAsync(user, Constants.ProductCustomerRoleName, CancellationToken.None);
 
             var result = await _userManager.CreateAsync(user, registerViewModel.Password);
 
