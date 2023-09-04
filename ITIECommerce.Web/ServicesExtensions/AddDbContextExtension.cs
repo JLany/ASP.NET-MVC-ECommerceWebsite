@@ -1,7 +1,7 @@
 ﻿using ITIECommerce.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace ITIECommerce.Web.ECommerceServicesExtensions
+namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class AddDbContextExtension
     {

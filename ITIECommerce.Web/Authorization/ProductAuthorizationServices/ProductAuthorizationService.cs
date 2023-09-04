@@ -30,16 +30,11 @@ public class ProductAuthorizationService : IProductAuthorizationService
         _authorizationService = authorizationService;
     }
 
-    public async Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user, Product product)
+    public async Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user)
     {
         var authResult = await _authorizationService
-            .AuthorizeAsync(user, product, ProductOperations.Create);
+            .AuthorizeAsync(user, new Product(), ProductOperations.Create);
         return authResult.Succeeded;
-    }
-
-    public async Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user, ProductViewModel product)
-    {
-        return await AuthorizeCreateAsync(user, new Product(product));
     }
 
     public async Task<bool> AuthorizeUpdateAsync(ClaimsPrincipal user, Product product)

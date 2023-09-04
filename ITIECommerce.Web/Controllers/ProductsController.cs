@@ -8,11 +8,13 @@ using ITIECommerce.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
 using ITIECommerce.Web.Utility;
+using System.Xml.Linq;
 
 namespace ITIECommerce.Web.Controllers
 {
     public class ProductsController : Controller
     {
+        private static readonly string ProductImagesUploadPath = "/upload/images/products";
         private readonly ITIECommerceDbContext _context;
         private readonly UserManager<ITIECommerceUser> _userManager;
         private readonly IProductAuthorizationService _authorizationService;
@@ -94,7 +96,7 @@ namespace ITIECommerce.Web.Controllers
             [Bind("Name,Description,Price,Quantity,Image")] ProductViewModel product)
         {
             bool isAuthorized = await _authorizationService
-                .AuthorizeCreateAsync(User, product);
+                .AuthorizeCreateAsync(User);
 
             if (!isAuthorized)
             {
@@ -109,9 +111,25 @@ namespace ITIECommerce.Web.Controllers
             var userId = _userManager.GetUserId(User);
 
             product.SellerId = userId;
-            product.ImageUri = await _imageWriter.WriteImageToRootAsync(product.Image);
+            product.ImageUri = await _imageWriter
+                .WriteImageToRootAsync(product.Image, ProductImagesUploadPath);
 
-            _context.Add(new Product(product));
+            //SellerId = viewModel.SellerId;
+            //Name = viewModel.Name;
+            //Description = viewModel.Description;
+            //Price = viewModel.Price;
+            //Quantity = viewModel.Quantity;
+            //ImageUri = viewModel.ImageUri;
+
+            _context.Add(new Product
+            {
+                SellerId = product.SellerId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Quantity = product.Quantity,
+                ImageUri = product.ImageUri,
+            });
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(MyProducts));
@@ -202,9 +220,10 @@ namespace ITIECommerce.Web.Controllers
             product.Price = viewModel.Price;
             product.Quantity = viewModel.Quantity;
 
-            string? imageUri = await _imageWriter.WriteImageToRootAsync(viewModel.Image);
+            string? imageUri = await _imageWriter
+                .WriteImageToRootAsync(viewModel.Image, ProductImagesUploadPath);
 
-            if (imageUri is not null)
+            if (imageUri != null)
             {
                 product.ImageUri = imageUri;
             }

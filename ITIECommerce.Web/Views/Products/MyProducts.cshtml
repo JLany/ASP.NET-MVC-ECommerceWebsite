@@ -10,7 +10,18 @@
 <div class="justify-content-center" style="padding: 120px;">
 <h1 class="h1">Your Products</h1>
 <a class="btn btn-primary " asp-action="Create">Create New</a>
+<br />
 
+@if (!Model.Any())
+{
+    <div class="card border shadow-none">
+        <div class="card-body">
+            <h3>You do not have any products yet.</h3>
+        </div>
+    </div>
+}
+else
+{
 <table class="table table-striped">
     <thead>
         <tr>
@@ -20,10 +31,7 @@
             <th>Available Quantity</th>
         </tr>
     </thead>
-    @if (!Model.Any())
-    {
-        <text>You do not have any products yet.</text>
-    }
+
     <tbody>
 
         @foreach (var p in Model)
@@ -54,6 +62,7 @@
         }
     </tbody>
 </table>
+}
 </div>
 @section Scripts {
     <script>

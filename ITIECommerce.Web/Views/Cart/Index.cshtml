@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_ECommerceLayout.cshtml";
+
+    bool isCartEmpty = (Model.CartEntries?.Any()).GetValueOrDefault() == false;
 }
 
 <h1>Shopping Cart</h1>
@@ -14,7 +16,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xl-8">
-            @if (!Model.CartEntries.Any())
+            @if (isCartEmpty)
             {
                 <div class="card border shadow-none">
                     <div class="card-body">
@@ -91,63 +93,70 @@
                 </div>
 
                 <!-- Check Out -->
-                <div class="col-sm-6">
-                    <div class="text-sm-end mt-2 mt-sm-0">
+                @if (!isCartEmpty)
+                {
+                    <div class="col-sm-6">
+                        <div class="text-sm-end mt-2 mt-sm-0">
 
-                        <a href="ecommerce-checkout.html" class="btn btn-success">
-                            <i class="mdi mdi-cart-outline me-1"></i> Checkout
-                        </a>
+                            <a asp-action="Checkout" class="btn btn-success">
+                                <i class="mdi mdi-cart-outline me-1"></i> Checkout
+                            </a>
 
+                        </div>
                     </div>
-                </div>
+                }
 
             </div>
 
         </div>
         <div class="col-xl-4">
             <div class="mt-5 mt-lg-0">
-                <div class="card border shadow-none">
-                    <div class="card-header bg-transparent border-bottom py-3 px-4">
-                        <h5 class="font-size-16 mb-0">Order Summary</h5>
-                    </div>
-                    <div class="card-body p-4 pt-2">
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td>Sub Total :</td>
-                                        <td class="text-end">$@Model.SubTotal.ToString(".00")</td>
-                                    </tr>
-
-                                    @* <tr>
-                                        <td>Discount : </td>
-                                        <td class="text-end">- $ 78</td>
-                                    </tr> *@
-
-                                    <tr>
-                                        <td>Shipping Charge :</td>
-                                        <td class="text-end">$@Model.ShippingCost.ToString(".00")</td>
-                                    </tr>
-
-                                    @* <tr>
-                                        <td>Estimated Tax : </td>
-                                        <td class="text-end">$ 18.20</td>
-                                    </tr> *@
-
-                                    <tr class="bg-light">
-                                        <th>Total :</th>
-                                        <td class="text-end">
-                                            <span class="fw-bold">
-                                                $@((Model.SubTotal + Model.ShippingCost).ToString(".00"))
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <!-- Order Summary -->
+                @if (!isCartEmpty) 
+                {
+                    <div class="card border shadow-none">
+                        <div class="card-header bg-transparent border-bottom py-3 px-4">
+                            <h5 class="font-size-16 mb-0">Order Summary</h5>
                         </div>
+                        <div class="card-body p-4 pt-2">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>Sub Total :</td>
+                                            <td class="text-end">$@Model.SubTotal.ToString(".00")</td>
+                                        </tr>
 
-                    </div>
+                                        @* <tr>
+                                            <td>Discount : </td>
+                                            <td class="text-end">- $ 78</td>
+                                        </tr> *@
+
+                                        <tr>
+                                            <td>Shipping Charge :</td>
+                                            <td class="text-end">$@Model.ShippingCost.ToString(".00")</td>
+                                        </tr>
+
+                                        @* <tr>
+                                            <td>Estimated Tax : </td>
+                                            <td class="text-end">$ 18.20</td>
+                                        </tr> *@
+
+                                        <tr class="bg-light">
+                                            <th>Total :</th>
+                                            <td class="text-end">
+                                                <span class="fw-bold">
+                                                    $@((Model.SubTotal + Model.ShippingCost).ToString(".00"))
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
                 </div>
+                }
             </div>
         </div>
     </div>

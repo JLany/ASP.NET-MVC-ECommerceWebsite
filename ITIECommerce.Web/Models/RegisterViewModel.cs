@@ -27,4 +27,6 @@ public class RegisterViewModel
 
     [MinLength(2)]
     public string? LastName { get; set; }
+
+    public bool SignUpAsSeller { get; set; } = false;
 }

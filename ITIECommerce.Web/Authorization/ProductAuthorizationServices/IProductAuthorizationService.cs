@@ -6,8 +6,7 @@ namespace ITIECommerce.Web.Authorization.ProductAuthorizationServices
 {
     public interface IProductAuthorizationService
     {
-        Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user, Product product);
-        Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user, ProductViewModel product);
+        Task<bool> AuthorizeCreateAsync(ClaimsPrincipal user);
         Task<bool> AuthorizeDeleteAsync(ClaimsPrincipal user, Product product);
         Task<bool> AuthorizeDeleteAsync(ClaimsPrincipal user, ProductViewModel product);
         Task<bool> AuthorizeUpdateAsync(ClaimsPrincipal user, Product product);

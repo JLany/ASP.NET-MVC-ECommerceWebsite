@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITIECommerce.Web.ECommerceServicesExtensions
+namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class AddIdentityExtension
     {

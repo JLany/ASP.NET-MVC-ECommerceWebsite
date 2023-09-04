@@ -3,7 +3,7 @@ using ITIECommerce.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace ITIECommerce.Web.ECommerceServicesExtensions
+namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class SetupInfrastructureServicesExtension
     {

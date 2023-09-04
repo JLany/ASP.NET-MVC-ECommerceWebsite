@@ -1,5 +1,6 @@
 ﻿using ITIECommerce.Data;
 using ITIECommerce.Data.Models;
+using ITIECommerce.Web.Authorization;
 using ITIECommerce.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,15 +15,18 @@ public class CartController : Controller
     private static readonly string CartIdKey = "CartId";
     private readonly ITIECommerceDbContext _context;
     private readonly UserManager<ITIECommerceUser> _userManager;
+    private readonly SignInManager<ITIECommerceUser> _signInManager;
     private readonly ILogger<CartController> _logger;
 
     public CartController(
         ITIECommerceDbContext context,
         UserManager<ITIECommerceUser> userManager, 
+        SignInManager<ITIECommerceUser> signInManager,
         ILogger<CartController> logger)
     {
         _context = context;
         _userManager = userManager;
+        _signInManager = signInManager;
         _logger = logger;
     }
 
@@ -30,6 +34,11 @@ public class CartController : Controller
     [AllowAnonymous]
     public IActionResult Index()
     {
+        if (User.IsInRole(Constants.ProductSellerRoleName))
+        {
+            return Forbid();
+        }
+
         dynamic cart = GetCartOrCreate();
 
         if (cart is Cart)
@@ -49,6 +58,11 @@ public class CartController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> AddToCart(CartItemViewModel cartItem)
     {
+        if (User.IsInRole(Constants.ProductSellerRoleName))
+        {
+            return Forbid();
+        }
+
         var product = await _context.Products
             .FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
 
@@ -76,6 +90,11 @@ public class CartController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> RemoveFromCart(int id)
     {
+        if (User.IsInRole(Constants.ProductSellerRoleName))
+        {
+            return Forbid();
+        }
+
         var cart = GetCartOrCreate();
 
         int count = await RemoveItemFromCartAsync(cart, id);
@@ -84,6 +103,68 @@ public class CartController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Checkout()
+    {
+        if (!_signInManager.IsSignedIn(User))
+        {
+            return Challenge();
+        }
+
+        if (User.IsInRole(Constants.ProductSellerRoleName))
+        {
+            return Forbid();
+        }
+
+        Cart cart = GetCartOrCreate();
+
+        if (IsCartEmpty(cart))
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var customer = await _userManager.GetUserAsync(User);
+
+        var order = new Order
+        {
+            CustomerId = customer.Id,
+            Address = customer.Address,
+            CreateDate = DateTime.UtcNow,
+        };
+
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync(); 
+
+        IEnumerable<OrderEntry> orderEntries =
+            cart.CartEntries
+            .Select(ce => new OrderEntry
+            {
+                OrderId = order.Id,
+                ProductId = ce.ProductId,
+                Quantity = ce.Quantity,
+                SubTotal = ce.SubTotal,
+            });
+
+        order.SubTotal = orderEntries
+            .Aggregate(0M, (total, oe) => total + oe.SubTotal);
+
+        order.Total = order.SubTotal + order.ShippingCost;
+
+        _context.Orders.Update(order);
+        await _context.AddRangeAsync(orderEntries);
+        _context.CartEntries.RemoveRange(cart.CartEntries);
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Details", "Orders", new { id = order.Id });
+    }
+
+    private bool IsCartEmpty(Cart cart)
+    {
+        return 
+            (cart.CartEntries?.Any())
+            .GetValueOrDefault() == false;
     }
 
     private dynamic GetCartOrCreate()
@@ -214,20 +295,24 @@ public class CartController : Controller
 
     private async Task AddItemToCartAsync(dynamic cart, CartItemViewModel cartItem)
     {
-
         if (cart is Cart)
         {
             string customerId = cart.CustomerId;
             var entry = await _context.CartEntries
                 .FirstOrDefaultAsync(ce => ce.CartId == customerId && ce.ProductId == cartItem.ProductId);
 
+
             if (entry == null)
             {
+                var product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
+
                 entry = new CartEntry<Cart> 
                 { 
                     CartId = cart.CustomerId,
                     ProductId = cartItem.ProductId,
                     Quantity = cartItem.Quantity,
+                    SubTotal = product!.Price * cartItem.Quantity,
                 };
 
                 _context.CartEntries.Add(entry);
@@ -247,11 +332,15 @@ public class CartController : Controller
 
             if (entry == null)
             {
+                var product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
+
                 entry = new CartEntry<AnonymousCart>
                 {
                     CartId = cart.Id,
                     ProductId = cartItem.ProductId,
                     Quantity = cartItem.Quantity,
+                    SubTotal = product!.Price * cartItem.Quantity,
                 };
 
                 _context.AnonymousCartEntries.Add(entry);

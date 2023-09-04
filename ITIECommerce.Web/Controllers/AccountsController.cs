@@ -34,6 +34,12 @@ public class AccountsController : Controller
         _logger = logger;
     }
 
+    [AllowAnonymous]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Login()
@@ -85,10 +91,13 @@ public class AccountsController : Controller
         if (ModelState.IsValid)
         {
             var user = CreateUser(registerViewModel);
+            var role = registerViewModel.SignUpAsSeller
+                ? Constants.ProductSellerRoleName
+                : Constants.ProductCustomerRoleName;
 
             await _userStore.SetUserNameAsync(user, registerViewModel.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, registerViewModel.Email, CancellationToken.None);
-            await _roleStore.AddToRoleAsync(user, Constants.ProductCustomerRoleName, CancellationToken.None);
+            await _roleStore.AddToRoleAsync(user, role, CancellationToken.None);
 
             var result = await _userManager.CreateAsync(user, registerViewModel.Password);
 

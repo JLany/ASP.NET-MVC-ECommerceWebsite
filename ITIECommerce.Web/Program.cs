@@ -1,4 +1,4 @@
-using ITIECommerce.Web.ECommerceServicesExtensions;
+using ITIECommerce.Web.ServicesExtensions;
 using ITIECommerce.Web.Utility;
 
 namespace ITIECommerce.Web;

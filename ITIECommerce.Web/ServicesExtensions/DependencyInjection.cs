@@ -4,7 +4,7 @@ using ITIECommerce.Web.Authorization.ProductAuthorizationServices;
 using ITIECommerce.Web.Utility;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ITIECommerce.Web.ECommerceServicesExtensions
+namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class DependencyInjection
     {

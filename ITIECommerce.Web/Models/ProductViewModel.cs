@@ -7,7 +7,7 @@ public class ProductViewModel
 {
     public int? Id { get; set; }
 
-    public string SellerId { get; set; } 
+    public string? SellerId { get; set; } 
     public string? SellerName { get; set; }
 
     [MinLength(2)]

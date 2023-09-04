@@ -9,10 +9,22 @@ public class ImageWriter : IImageWriter
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public async Task<string?> WriteImageToRootAsync(IFormFile? image)
+    public async Task<string?> WriteImageToRootAsync(IFormFile? image, string path = "/")
     {
-        // TODO: Implement WriteImageToRootAsync.
+        string? imageUri = null;
 
-        return "/images/product/product5.jpg";
+        if (image != null)
+        {
+            imageUri = Path.Combine(
+                path,
+                Guid.NewGuid().ToString() + ".jpg");
+
+            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, imageUri.Trim('/'));
+
+            using FileStream stream = File.Create(fullPath);
+            await image.CopyToAsync(stream);
+        }
+
+        return imageUri;
     }
 }

@@ -43,7 +43,7 @@ public class OrderViewModel
         SubTotal = order.SubTotal;
         ShippingCost = order.ShippingCost;
         Total = order.Total;
-        CreateDate = order.CreateDate;
+        CreateDate = order.CreateDate.AddHours(3);
         OrderEntries = order.OrderEntries!;
     }
 }

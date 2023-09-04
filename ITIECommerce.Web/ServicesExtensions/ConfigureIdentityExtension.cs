@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ITIECommerce.Web.ECommerceServicesExtensions
+namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class ConfigureIdentityExtension
     {
@@ -18,8 +18,7 @@ namespace ITIECommerce.Web.ECommerceServicesExtensions
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
-                // TODO: Replace with a more restrictive time span.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(3);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 

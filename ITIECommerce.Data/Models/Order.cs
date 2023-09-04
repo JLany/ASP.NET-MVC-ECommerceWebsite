@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ITIECommerce.Data.Models;
 
@@ -19,7 +14,7 @@ public class Order
     public string Address { get; set; } = null!;
 
     public decimal SubTotal { get; set; }
-    public decimal ShippingCost { get; set; }
+    public decimal ShippingCost { get; set; } = 20M;
 
     [Range(0, double.MaxValue)]
     public decimal Total { get; set; }

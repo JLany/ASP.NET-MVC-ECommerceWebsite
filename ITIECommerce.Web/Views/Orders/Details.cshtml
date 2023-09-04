@@ -145,7 +145,8 @@
                         <h3 class="h6">Address</h3>
 
                         <address>
-                            <strong>@(Model.CustomerName ?? Model.CustomerEmailAddress)</strong><br>
+                            <strong>@Model.CustomerName</strong><br>
+                            <strong>@Model.CustomerEmailAddress</strong><br>
                             @Model.Address<br>
                             @* San Francisco, CA 94103<br> *@
                             <abbr title="Phone">P:</abbr> @(Model.CustomerPhoneNumber ?? "-")

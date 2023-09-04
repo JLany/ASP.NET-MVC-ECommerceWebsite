@@ -1,4 +1,4 @@
-﻿namespace ITIECommerce.Web.ECommerceServicesExtensions
+﻿namespace ITIECommerce.Web.ServicesExtensions
 {
     public static class ConfigureCookieExtension
     {
@@ -9,10 +9,9 @@
                 // Cookie settings.
                 options.Cookie.HttpOnly = true;
 
-                // TODO: Replace with more forgiving time span.
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
 
-                options.LoginPath = "/Accounts/Login";
+                options.LoginPath = "/Accounts/Register";
                 options.AccessDeniedPath = "/Accounts/AccessDenied";
                 options.SlidingExpiration = true;
             });

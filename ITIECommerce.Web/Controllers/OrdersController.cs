@@ -46,8 +46,6 @@ public class OrdersController : Controller
             .ToList());
     }
 
-    // GET: Orders/Details/5
-    // TODO: Remove This.
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null || _context.Orders == null)
