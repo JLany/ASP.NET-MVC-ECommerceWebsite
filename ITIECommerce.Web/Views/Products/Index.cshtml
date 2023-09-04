@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Products";
     Layout = "_ECommerceLayout";
+
+    bool userIsSeller = User.IsInRole(Constants.ProductSellerRoleName);
+    bool userIsCustomer = User.IsInRole(Constants.ProductCustomerRoleName);
 }
 
 
@@ -43,20 +46,20 @@
                                     <div class="bi-star-fill"></div>
                                 </div>
                                 <!-- Product price-->
-                                <h6 class="fw-normal">$@product.Price</h6>
+                                <h6 class="fw-normal">$@product.Price.ToString(".00")</h6>
                                 <h6 class="fw-bold">Sold by: @product.SellerName</h6>
                             </div>
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
-                                @if (User.IsInRole(Constants.ProductCustomerRoleName)) 
+                                @if (!userIsSeller) 
                                 {
                                     <a class="btn btn-outline-dark mt-auto" asp-action="Details" asp-route-id="@product.Id">
                                         Add to cart
                                     </a>
                                 }
-                                else if (User.IsInRole(Constants.ProductSellerRoleName))
+                                else 
                                 {
                                     <a class="btn btn-outline-dark mt-auto" asp-action="Details" asp-route-id="@product.Id">
                                         Details

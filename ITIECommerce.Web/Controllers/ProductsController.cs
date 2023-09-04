@@ -114,13 +114,6 @@ namespace ITIECommerce.Web.Controllers
             product.ImageUri = await _imageWriter
                 .WriteImageToRootAsync(product.Image, ProductImagesUploadPath);
 
-            //SellerId = viewModel.SellerId;
-            //Name = viewModel.Name;
-            //Description = viewModel.Description;
-            //Price = viewModel.Price;
-            //Quantity = viewModel.Quantity;
-            //ImageUri = viewModel.ImageUri;
-
             _context.Add(new Product
             {
                 SellerId = product.SellerId,
@@ -170,7 +163,7 @@ namespace ITIECommerce.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, 
-            [Bind("Id,SellerId,Name,Description,Price,Quantity,ImageUri")] ProductViewModel product)
+            [Bind("Id,SellerId,Name,Description,Price,Quantity,Image")] ProductViewModel product)
         {
             bool isAuthorized = await _authorizationService
                 .AuthorizeUpdateAsync(User, product);

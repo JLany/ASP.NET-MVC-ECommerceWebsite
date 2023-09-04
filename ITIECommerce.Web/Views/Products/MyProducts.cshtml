@@ -53,10 +53,11 @@ else
                 </td>
 
                 <td>
-                    <a class="btn btn-danger" onclick="confirmDelete(event)"
-                        asp-action="Delete" asp-route-id="@p.Id">
-                        Delete
-                    </a>
+                    <form asp-action="Delete" asp-route-id="@p.Id" method="post">
+                        <button class="btn btn-danger" onclick="confirmDelete(event)" type="submit">
+                            Delete
+                        </button>
+                    </form>
                 </td>
             </tr>
         }
