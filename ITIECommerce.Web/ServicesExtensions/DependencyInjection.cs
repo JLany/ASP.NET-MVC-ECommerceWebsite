@@ -24,8 +24,6 @@ namespace ITIECommerce.Web.ServicesExtensions
             services
                 .AddTransient<IImageWriter, ImageWriter>();
 
-            
-
             return services;
         }
     }

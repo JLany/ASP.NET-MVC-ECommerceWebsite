@@ -54,6 +54,7 @@ public class OrdersController : Controller
         }
 
         var order = await _context.Orders
+            .IgnoreQueryFilters()
             .Include(o => o.Customer)
             .Include(o => o.OrderEntries)!
             .ThenInclude(oe => oe.Product)

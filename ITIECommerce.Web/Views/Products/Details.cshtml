@@ -23,7 +23,7 @@
 
                 <p class="lead">@Model.Description</p>
 
-                @if (!User.IsInRole(Constants.ProductSellerRoleName) && Model.Quantity < 1)
+                @if (!User.IsInRole(Constants.ProductSellerRoleName) && (Model.Quantity < 1 || Model.IsDeleted))
                 {
                     <div class="fs-5 mb-5 text-danger">
                         Currently unavailable.

@@ -23,6 +23,8 @@ public class ProductViewModel
     public string? ImageUri { get; set; }
     public IFormFile? Image { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public ProductViewModel()
     {
         
@@ -38,5 +40,6 @@ public class ProductViewModel
         ImageUri = product.ImageUri;
         SellerId = product.SellerId;
         SellerName = product.Seller?.FullName;
+        IsDeleted = product.IsDeleted;
     }
 }

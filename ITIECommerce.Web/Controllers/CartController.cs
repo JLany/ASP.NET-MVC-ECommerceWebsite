@@ -174,12 +174,6 @@ public class CartController : Controller
         Cart cart;
         AnonymousCart anonymousCart;
 
-        if (userId != null && cartId != null)
-        {
-            TransferToUserCart(userId, cartId);
-            Response.Cookies.Delete(CartIdKey);
-        }
-
         if (userId != null)
         {
             cart = _context.Carts
@@ -196,6 +190,12 @@ public class CartController : Controller
 
                 _context.Carts.Add(insert);
                 cart = insert;
+            }
+
+            if (cartId != null)
+            {
+                TransferToUserCart(cart, cartId);
+                Response.Cookies.Delete(CartIdKey);
             }
 
             _context.SaveChanges();
@@ -361,20 +361,12 @@ public class CartController : Controller
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="cartId"></param>
-    private void TransferToUserCart(string userId, string cartId)
+    private void TransferToUserCart(Cart cart, string cartId)
     {
         var anonymousCart = _context.AnonymousCarts
             .Include(c => c.CartEntries)
             .ThenInclude(ce => ce.Product)
             .First(c => c.Id == cartId);
-
-        var cart = new Cart
-        {
-            CustomerId = userId,
-            CartEntries = new List<CartEntry<Cart>>()
-        };
-
-        _context.Carts.Add(cart);
 
         foreach (var entry in anonymousCart.CartEntries )
         {

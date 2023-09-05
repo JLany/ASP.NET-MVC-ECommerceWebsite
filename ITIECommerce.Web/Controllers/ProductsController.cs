@@ -69,6 +69,7 @@ namespace ITIECommerce.Web.Controllers
             }
 
             var product = await _context.Products
+                .IgnoreQueryFilters()
                 .Include(p => p.Seller)
                 .FirstOrDefaultAsync(p => p.Id == id);
 

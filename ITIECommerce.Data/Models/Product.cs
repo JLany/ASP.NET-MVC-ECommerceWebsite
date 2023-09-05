@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ITIECommerce.Data.Models;
 
-public class Product
+public class Product : ISoftDeletable
 {
     public int Id { get; set; }
 
@@ -27,6 +22,8 @@ public class Product
     public string? ImageUri { get; set; }
 
     public virtual ICollection<OrderEntry>? OrderEntries { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public Product()
     {

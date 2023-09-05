@@ -1,4 +1,5 @@
-﻿using ITIECommerce.Data.Models;
+﻿using ITIECommerce.Data.Interceptors;
+using ITIECommerce.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,9 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Cart>()
+            .HasKey(c => c.CustomerId);
 
         #region Column Types
         builder.Entity<Product>()
@@ -66,9 +70,6 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
             .HasColumnType("nvarchar(128)");
         #endregion
 
-        builder.Entity<Cart>()
-            .HasKey(c => c.CustomerId);
-
         #region Default Values
         builder.Entity<Order>()
             .Property(o => o.CreateDate)
@@ -78,5 +79,27 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
             .Property(AnonymousCart => AnonymousCart.Id)
             .HasDefaultValueSql("newid()");
         #endregion
+
+        #region Query Filters
+        builder.Entity<Product>()
+            .HasQueryFilter(p => p.IsDeleted == false);
+
+        builder.Entity<CartEntry<Cart>>()
+            .HasQueryFilter(ce => ce.Product.IsDeleted == false);
+
+        builder.Entity<CartEntry<AnonymousCart>>()
+            .HasQueryFilter(ce => ce.Product.IsDeleted == false);
+
+        builder.Entity<OrderEntry>() 
+            .HasQueryFilter(oe => oe.Product.IsDeleted == false);
+        #endregion
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        optionsBuilder
+            .AddInterceptors(new SoftDeleteInterceptor());
     }
 }
