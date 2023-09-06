@@ -29,55 +29,55 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
             .HasKey(c => c.CustomerId);
 
         #region Column Types
-        builder.Entity<Product>()
-            .Property("Price")
-            .HasColumnType("money");
+        //builder.Entity<Product>()
+        //    .Property("Price")
+        //    .HasColumnType("money");
 
-        builder.Entity<Order>()
-            .Property("Total")
-            .HasColumnType("money");
+        //builder.Entity<Order>()
+        //    .Property("Total")
+        //    .HasColumnType("money");
 
-        builder.Entity<Order>()
-            .Property("ShippingCost")
-            .HasColumnType("money");
+        //builder.Entity<Order>()
+        //    .Property("ShippingCost")
+        //    .HasColumnType("money");
 
-        builder.Entity<Order>()
-            .Property("SubTotal")
-            .HasColumnType("money");
+        //builder.Entity<Order>()
+        //    .Property("SubTotal")
+        //    .HasColumnType("money");
 
-        builder.Entity<OrderEntry>()
-            .Property("SubTotal")
-            .HasColumnType("money");
+        //builder.Entity<OrderEntry>()
+        //    .Property("SubTotal")
+        //    .HasColumnType("money");
 
-        builder.Entity<CartEntry<Cart>>()
-            .Property(ce => ce.SubTotal)
-            .HasColumnType("money");
+        //builder.Entity<CartEntry<Cart>>()
+        //    .Property(ce => ce.SubTotal)
+        //    .HasColumnType("money");
 
-        builder.Entity<CartEntry<AnonymousCart>>()
-            .Property(ce => ce.SubTotal)
-            .HasColumnType("money");
+        //builder.Entity<CartEntry<AnonymousCart>>()
+        //    .Property(ce => ce.SubTotal)
+        //    .HasColumnType("money");
 
-        builder.Entity<ITIECommerceUser>()
-            .Property(u => u.Id)
-            .HasColumnType("nvarchar(128)");
+        //builder.Entity<ITIECommerceUser>()
+        //    .Property(u => u.Id)
+        //    .HasColumnType("nvarchar(128)");
 
-        builder.Entity<Cart>()
-            .Property("CustomerId")
-            .HasColumnType("nvarchar(128)");
+        //builder.Entity<Cart>()
+        //    .Property("CustomerId")
+        //    .HasColumnType("nvarchar(128)");
 
-        builder.Entity<AnonymousCart>()
-            .Property(AnonymousCart => AnonymousCart.Id)
-            .HasColumnType("nvarchar(128)");
+        //builder.Entity<AnonymousCart>()
+        //    .Property(AnonymousCart => AnonymousCart.Id)
+        //    .HasColumnType("nvarchar(128)");
         #endregion
 
         #region Default Values
-        builder.Entity<Order>()
-            .Property(o => o.CreateDate)
-            .HasDefaultValueSql("getdate()");
+        //builder.Entity<Order>()
+        //    .Property(o => o.CreateDate)
+        //    .HasDefaultValueSql("getdate()");
 
-        builder.Entity<AnonymousCart>()
-            .Property(AnonymousCart => AnonymousCart.Id)
-            .HasDefaultValueSql("newid()");
+        //builder.Entity<AnonymousCart>()
+        //    .Property(AnonymousCart => AnonymousCart.Id)
+        //    .HasDefaultValueSql("newid()");
         #endregion
 
         #region Query Filters

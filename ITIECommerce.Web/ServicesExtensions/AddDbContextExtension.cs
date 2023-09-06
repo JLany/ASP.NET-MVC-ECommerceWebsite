@@ -9,7 +9,7 @@ namespace ITIECommerce.Web.ServicesExtensions
             , string connectionString)
         {
             services.AddDbContext<ITIECommerceDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseNpgsql(connectionString));
 
             return services;
         }

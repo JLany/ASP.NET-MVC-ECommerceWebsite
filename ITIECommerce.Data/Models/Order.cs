@@ -19,7 +19,7 @@ public class Order
     [Range(0, double.MaxValue)]
     public decimal Total { get; set; }
 
-    public DateTime CreateDate { get; set; }
+    public DateTime CreateDate { get; set; } = DateTime.UtcNow;
     public OrderStatus Status { get; set; } = OrderStatus.Shipping;
 
     public virtual ICollection<OrderEntry>? OrderEntries { get; set; }
