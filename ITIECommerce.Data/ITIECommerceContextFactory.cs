@@ -14,17 +14,19 @@ internal class ITIECommerceContextFactory : IDesignTimeDbContextFactory<ITIEComm
         var dbContextBuilder = Activator
             .CreateInstance<DbContextOptionsBuilder<ITIECommerceDbContext>>();
 
-        var connectionString = new ConfigurationBuilder()
-            .SetBasePath(
-            Directory.GetParent(".")!
-            .GetDirectories()
-            .First(d => d.Name == "ITIECommerce.Web")
-            .FullName)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .Build()
-            .GetConnectionString("ITIECommerceDB");
+        //var connectionString = new ConfigurationBuilder()
+        //    .SetBasePath(
+        //    Directory.GetParent(".")!
+        //    .GetDirectories()
+        //    .First(d => d.Name == "ITIECommerce.Web")
+        //    .FullName)
+        //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        //    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+        //    .AddEnvironmentVariables()
+        //    .Build()
+        //    .GetConnectionString("ITIECommerceDB");
+
+        var connectionString = "Server=ymelk-iti-ecommerce-server.postgres.database.azure.com;Database=iti-ecommerce-database;Port=5432;Ssl Mode=Require;User Id=dtisxdkygi;Password=UW3SM56QKTYMG311$;";
 
         dbContextBuilder.UseNpgsql(connectionString);
 
