@@ -26,7 +26,7 @@ internal class ITIECommerceContextFactory : IDesignTimeDbContextFactory<ITIEComm
         //    .Build()
         //    .GetConnectionString("ITIECommerceDB");
 
-        var connectionString = "Server=ymelk-iti-ecommerce-server.postgres.database.azure.com;Database=iti-ecommerce-database;Port=5432;Ssl Mode=Require;User Id=dtisxdkygi;Password=UW3SM56QKTYMG311$;";
+        var connectionString = "Server=ymelk-iti-ecommerce-server.postgres.database.azure.com;Database=iti-ecommerce-database;Port=5432;Ssl Mode=VerifyFull;User Id=dtisxdkygi;Password=UW3SM56QKTYMG311$;";
 
         dbContextBuilder.UseNpgsql(connectionString);
 
