@@ -14,29 +14,31 @@ public class CartViewModel
         
     }
 
-    public CartViewModel(Cart cart) 
+    public CartViewModel(Cart cart)
     {
         if (cart != null)
         {
-            foreach (var entry in cart.CartEntries)
+            if (cart.CartEntries != null)
             {
-                if (CartEntries.ContainsKey(entry.Product))
+                foreach (var entry in cart.CartEntries)
                 {
-                    CartEntries[entry.Product] += entry.Quantity;
+                    if (CartEntries.ContainsKey(entry.Product))
+                    {
+                        CartEntries[entry.Product] += entry.Quantity;
+                    }
+                    else
+                    {
+                        CartEntries.Add(entry.Product, entry.Quantity);
+                    }
                 }
-                else
+                if (cart.CartEntries.Any())
                 {
-                    CartEntries.Add(entry.Product, entry.Quantity);
+                    SubTotal = CartEntries
+                        .Aggregate(
+                        0M,
+                        (total, entry) => total + (entry.Value * entry.Key.Price),
+                        total => total);
                 }
-            }
-
-            if (CartEntries.Any())
-            {
-                SubTotal = CartEntries
-                    .Aggregate(
-                    0M,
-                    (total, entry) => total + (entry.Value * entry.Key.Price),
-                    total => total);
             }
         }
     }
@@ -45,25 +47,27 @@ public class CartViewModel
     {
         if (cart != null)
         {
-            foreach (var entry in cart.CartEntries)
+            if (cart.CartEntries != null)
             {
-                if (CartEntries.ContainsKey(entry.Product))
+                foreach (var entry in cart.CartEntries)
                 {
-                    CartEntries[entry.Product] += entry.Quantity;
+                    if (CartEntries.ContainsKey(entry.Product))
+                    {
+                        CartEntries[entry.Product] += entry.Quantity;
+                    }
+                    else
+                    {
+                        CartEntries.Add(entry.Product, entry.Quantity);
+                    }
                 }
-                else
+                if (cart.CartEntries.Any())
                 {
-                    CartEntries.Add(entry.Product, entry.Quantity);
+                    SubTotal = CartEntries
+                        .Aggregate(
+                        0M,
+                        (total, entry) => total + (entry.Value * entry.Key.Price),
+                        total => total);
                 }
-            }
-
-            if (CartEntries.Any())
-            {
-                SubTotal = CartEntries
-                    .Aggregate(
-                    0M,
-                    (total, entry) => total + (entry.Value * entry.Key.Price),
-                    total => total);
             }
         }
     }

@@ -97,7 +97,7 @@ public class AccountsController : Controller
 
             await _userStore.SetUserNameAsync(user, registerViewModel.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, registerViewModel.Email, CancellationToken.None);
-            await _roleStore.AddToRoleAsync(user, role, CancellationToken.None);
+            await _roleStore.AddToRoleAsync(user, role.ToUpper(), CancellationToken.None);
 
             var result = await _userManager.CreateAsync(user, registerViewModel.Password);
 
