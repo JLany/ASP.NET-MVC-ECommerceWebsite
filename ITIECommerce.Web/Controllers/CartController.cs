@@ -219,7 +219,7 @@ public class CartController : Controller
 
             var options = new CookieOptions
             {
-                Expires = DateTime.Now.AddDays(60)
+                Expires = DateTime.UtcNow.AddDays(60)
             };
 
             Response.Cookies.Append(CartIdKey, insert.Id, options);
