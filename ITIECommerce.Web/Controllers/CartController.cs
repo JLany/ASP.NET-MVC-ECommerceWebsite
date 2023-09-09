@@ -201,34 +201,30 @@ public class CartController : Controller
             _context.SaveChanges();
             return cart;
         }
-        else if (cartId != null)
+        else // Not authenticated. 
         {
-            // Not authenticated.
             anonymousCart = _context.AnonymousCarts
                 .Include(c => c.CartEntries)
                 .ThenInclude(ce => ce.Product)
                 .FirstOrDefault(c => c.Id == cartId)!;
 
-            return anonymousCart;
-        }
-        else if (cartId == null)
-        {
-            var insert = new AnonymousCart();
-            _context.AnonymousCarts.Add(insert);
-            _context.SaveChanges();
-
-            var options = new CookieOptions
+            if (anonymousCart == null)
             {
-                Expires = DateTime.UtcNow.AddDays(60)
-            };
+                var insert = new AnonymousCart();
+                _context.AnonymousCarts.Add(insert);
+                _context.SaveChanges();
 
-            Response.Cookies.Append(CartIdKey, insert.Id, options);
-            anonymousCart = insert;
+                var options = new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(60)
+                };
+
+                Response.Cookies.Append(CartIdKey, insert.Id, options);
+                anonymousCart = insert;
+            }
 
             return anonymousCart;
         }
-
-        return null!;
     }
 
     private async Task IncrementItemQuantityAsync(int productId, int count)
