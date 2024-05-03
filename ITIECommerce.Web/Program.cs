@@ -1,5 +1,6 @@
 using ITIECommerce.Web.ServicesExtensions;
 using ITIECommerce.Web.Utility;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 
 namespace ITIECommerce.Web;
@@ -38,7 +39,14 @@ public class Program
             app.UseExceptionHandler("/Home/Error");
         }
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
+
+        // Forwarded Headers Middleware should run before other middleware.
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+
         app.UseStaticFiles();
 
         app.UseRouting();
