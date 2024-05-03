@@ -1,5 +1,6 @@
 using ITIECommerce.Web.ServicesExtensions;
 using ITIECommerce.Web.Utility;
+using Microsoft.AspNetCore.Identity;
 
 namespace ITIECommerce.Web;
 
@@ -14,6 +15,16 @@ public class Program
 
         builder.Services.RegisterServicesWithDependencyInjection();
 
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddSession(options =>
+        {
+            options.Cookie.Name = "ITI_Ecommrece_Cookie";
+            options.Cookie.IsEssential = true;
+            options.Cookie.HttpOnly = false;
+
+            options.IdleTimeout = TimeSpan.FromSeconds(30);
+        });
+
         // Configure services options
         builder.ConfigureServicesOptions();
 
@@ -27,12 +38,15 @@ public class Program
             app.UseExceptionHandler("/Home/Error");
         }
 
+        app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseSession();
 
         app.MapControllerRoute(
             name: "default",

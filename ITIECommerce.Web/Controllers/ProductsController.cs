@@ -39,6 +39,8 @@ namespace ITIECommerce.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            HttpContext.Session.SetString("Dev", "Carlo Abo Hamed");
+
             var products = _context.Products.Include(p => p.Seller);
             return View(
                 await products
