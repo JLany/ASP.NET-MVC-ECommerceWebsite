@@ -73,7 +73,7 @@ public class ITIECommerceDbContext : IdentityDbContext<ITIECommerceUser>
         #region Default Values
         builder.Entity<Order>()
             .Property(o => o.CreateDate)
-            .HasDefaultValueSql("getdate()");
+            .HasDefaultValueSql("DATE('now')");
 
         builder.Entity<AnonymousCart>()
             .Property(AnonymousCart => AnonymousCart.Id)

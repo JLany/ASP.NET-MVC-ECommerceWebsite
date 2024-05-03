@@ -26,7 +26,8 @@ internal class ITIECommerceContextFactory : IDesignTimeDbContextFactory<ITIEComm
             .Build()
             .GetConnectionString("ITIECommerceDB");
 
-        dbContextBuilder.UseSqlServer(connectionString);
+        //dbContextBuilder.UseSqlServer(connectionString);
+        dbContextBuilder.UseSqlite(connectionString);
 
         return new ITIECommerceDbContext(dbContextBuilder.Options);
     }

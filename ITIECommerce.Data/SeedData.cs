@@ -24,7 +24,7 @@ public class SeedData
         _customerId = await EnsureUser(serviceProvider, "customer@Ecommerce1.com", "customer@Ecommerce1.com");
         await EnsureRole(serviceProvider, _customerId, "Customer");
 
-        SeedDB(context);
+        await SeedDB(context);
     }
 
     private static async Task<string> EnsureUser(IServiceProvider serviceProvider,
@@ -136,8 +136,7 @@ public class SeedData
 
         if (!context.Orders.Any())
         {
-
-            context.Orders.AddRange(
+            await context.Orders.AddRangeAsync(
                 new Order
                 {
                     CustomerId = _customerId,
@@ -153,12 +152,12 @@ public class SeedData
             );
         }
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         if (!context.OrderEntries.Any())
         {
 
-            context.OrderEntries.AddRange(
+            await context.OrderEntries.AddRangeAsync(
                 new OrderEntry
                 {
                     OrderId = 1,
@@ -190,6 +189,6 @@ public class SeedData
             );
         }
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 }
