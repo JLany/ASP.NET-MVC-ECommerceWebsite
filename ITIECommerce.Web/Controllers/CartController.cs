@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using System.Net;
 
 namespace ITIECommerce.Web.Controllers;
@@ -365,9 +366,11 @@ public class CartController : Controller
             .ThenInclude(ce => ce.Product)
             .First(c => c.Id == cartId);
 
+        List<CartEntry<Cart>> newCartEntries = new();
+
         foreach (var entry in anonymousCart.CartEntries )
         {
-            cart.CartEntries?.Add(new CartEntry<Cart>
+            newCartEntries.Add(new CartEntry<Cart>
             {
                 CartId = cart.CustomerId,
                 Product = entry.Product,
@@ -377,9 +380,14 @@ public class CartController : Controller
             });
         }
 
-        _context.AnonymousCarts.Remove(anonymousCart);
+        // Add entries to the cart model.
+        cart.CartEntries.AddRange(newCartEntries);
 
-        _context.CartEntries.AddRange(cart.CartEntries);
+        // Add only new entries to DB.
+        _context.CartEntries.AddRange(newCartEntries);
+
+        // Remove the anonymous cart from DB.
+        _context.AnonymousCarts.Remove(anonymousCart);
 
         _context.SaveChanges();
     }
