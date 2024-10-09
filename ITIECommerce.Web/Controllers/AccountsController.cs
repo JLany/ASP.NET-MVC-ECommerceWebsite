@@ -50,7 +50,7 @@ public class AccountsController : Controller
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Login(LoginViewModel login)
+    public async Task<IActionResult> Login([FromForm] LoginViewModel login)
     {
         var result = await _signInManager
             .PasswordSignInAsync(login.UserName,
@@ -58,14 +58,18 @@ public class AccountsController : Controller
             isPersistent: login.RememberMe,
             lockoutOnFailure: false);
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            _logger.LogInformation("User logged in.");
-            return RedirectToAction("Index", "Products");
+            return View(login);
+        }
+        _logger.LogInformation("User logged in.");
+
+        if (Request.Cookies["CartId"] is not null)
+        {
+            return RedirectToAction("Index", "Cart");
         }
 
-        return View(login);
-
+        return RedirectToAction("Index", "Products");
     }
 
     [HttpPost]
@@ -87,7 +91,7 @@ public class AccountsController : Controller
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
+    public async Task<IActionResult> Register([FromForm] RegisterViewModel registerViewModel, string returnUrl = null!)
     {
         if (ModelState.IsValid)
         {
@@ -128,6 +132,7 @@ public class AccountsController : Controller
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
+
 
         // If we reach here, there is something wrong with the registeration.
         return View(registerViewModel);

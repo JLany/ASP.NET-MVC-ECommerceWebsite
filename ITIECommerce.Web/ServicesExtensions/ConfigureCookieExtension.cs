@@ -11,7 +11,7 @@
 
                 options.ExpireTimeSpan = TimeSpan.FromHours(24);
 
-                options.LoginPath = "/Accounts/Register";
+                options.LoginPath = "/Accounts/Login";
                 options.AccessDeniedPath = "/Accounts/AccessDenied";
                 options.SlidingExpiration = true;
             });
